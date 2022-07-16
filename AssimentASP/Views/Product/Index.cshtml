@@ -1,0 +1,79 @@
+﻿@model PaginatedResults<Product>
+<div class="content">
+    <h2>Product</h2>
+    <hr />
+    <div class="row">
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show"role="alert">
+                @TempData["Message"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        <div class="col-6">
+            <a asp-action="Create" class="btn btn-primary mb-2">New Product</a>
+        </div>
+        <div class="col-4 offset-2">
+            <form asp-action="Index" method="get">
+                <div class="input-group">
+                    <input type="text" name="s" class="form-control" value="@Model.SearchKeyword"/>
+                    <button type="submit" class="btn btn-success">Search</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-12">
+            <table class="table table-bordered table-hover table-sm font-sm">
+                <colgroup>
+                    <col class="col-3" />
+                    <col class="col-7"/>
+                    <col class="col-2"/>
+                </colgroup>
+                <thead class="bg-danger text-ligth">
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Results)
+                    {
+                        <tr>
+                            <td>@product.Name</td>
+                            <td>@product.Description</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-info">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@product.Id"class="btn btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li class="page-item @(Model.Page==1?"disabled":"")">
+                        <a class="page-link" asp-route-s="@Model.SearchKeyword" asp-route-p="@(Model.Page-1)">Previous</a>
+                    </li>
+                    @for(var pageNumber = 1; pageNumber <= Model.TotalCount; pageNumber++)
+                    {
+                        if (pageNumber == Model.Page)
+                        {
+                            <li class="page-item active">
+                                <span class="page-link">@pageNumber</span>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a class="page-link"asp-route-s="@Model.SearchKeyword" asp-route-p="@pageNumber">@pageNumber</a>
+                            </li>
+                        }
+                    }
+                    <li class="page-item @(Model.Page == Model.TotalCount?"disabled":"")">
+                        <a class="page-link" asp-route-s=" @Model.SearchKeyword" asp-route-p="@(Model.Page+1)">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
